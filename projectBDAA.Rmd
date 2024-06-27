@@ -1,0 +1,343 @@
+---
+title: "Smart phone data analysis using R"
+author1: Meenu Mathew
+author2: Raj Pandya
+output: pdf_document
+author3: Akshay Ramachandran
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+
+# If your file has a header row
+data <- read.csv("smartphones.csv", header = TRUE)
+head(data)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+```{r}
+#part 1 operations
+# Set the working directory to the location of your file
+
+# Load the CSV file into a data frame
+smartphones <- read.csv("smartphones.csv", header = TRUE, stringsAsFactors = FALSE)
+
+# Inspect the first few rows of the data
+head(smartphones)
+
+# View the structure of the data
+str(smartphones)
+
+# a. Vector
+brands <- smartphones$Brand
+print(brands)
+
+# b. List
+smartphone_list <- list(
+  smartphone = smartphones$Smartphone[1],
+  brand = smartphones$Brand[1],
+  model = smartphones$Model[1],
+  ram = smartphones$RAM[1],
+  storage = smartphones$Storage[1],
+  color = smartphones$Color[1],
+  free = smartphones$Free[1],
+  final_price = smartphones$ Final.Price[1]
+)
+print(smartphone_list)
+
+# c. Array
+array_data <- array(c(smartphones$RAM, smartphones$Storage), dim = c(3, 3, 2))
+print(array_data)
+
+# d. Matrix
+matrix_data <- matrix(c(smartphones$RAM[1:9], smartphones$Storage[1:9]), nrow = 3, ncol = 6)
+print(matrix_data)
+
+# e. Data Frame
+head(smartphones)
+str(smartphones)
+
+```
+```{r}
+# Load necessary libraries
+#install.packages("dplyr")
+library(dplyr)
+
+# Set the working directory to the location of your file
+
+# Load the CSV file into a data frame
+smartphones <- read.csv("smartphones.csv", header = TRUE, stringsAsFactors = FALSE)
+
+# View the first few rows of the data frame
+head(smartphones)
+```
+
+
+```{r}
+# a. Arrange
+arranged_data <- smartphones %>% arrange(Final.Price)
+tail(arranged_data)
+```
+
+
+```{r}
+filtered_data <- smartphones %>%
+  filter(RAM > 4)
+head(filtered_data)
+```
+
+
+```{r}
+# Use dplyr's slice function to select the first 5 rows
+sliced_data <- smartphones %>%
+  slice(1:5)
+
+
+
+```
+
+```{r}
+# Print the sliced data
+print(sliced_data)
+```
+
+```{r}
+mutated_data <- smartphones %>% mutate(PriceDollar = Final.Price * 1.1) %>% arrange(Final.Price)
+```
+
+
+```{r}
+tail(mutated_data)
+```
+
+
+```{r}
+#summary_data <- mutated_data %>% summarize(AveragePrice = mean(PriceDollar, na.rm = TRUE))
+#print(summary_data)
+```
+
+
+```{r}
+final_data <- mutated_data  %>% select(Smartphone, Brand,  Model,Storage, RAM,Color, PriceDollar)
+#final_data
+tail(final_data)
+```
+
+
+```{r}
+library(ggplot2)
+brand_counts <- final_data %>%
+  group_by(Brand) %>%
+  summarize(Count = n())
+ggplot(brand_counts, aes(x = "", y = Count, fill = Brand)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y", start = 0) +
+  theme_void() +
+  labs(title = "Distribution of Smartphone Brands")
+
+
+```
+
+```{r}
+ggplot(brand_counts, aes(x = Brand, y = Count, fill = Brand)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Number of Smartphones per Brand", x = "Brand", y = "Count") +
+  theme_minimal()
+
+
+
+
+```
+
+```{r}
+ggplot(final_data, aes(x = Brand, y = PriceDollar, fill = Brand)) +
+  geom_boxplot() +
+  labs(title = "Final Price Distribution by Brand", x = "Brand", y = "Final Price") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+```{r}
+# Create the boxplot
+ggplot(final_data, aes(x = factor(Storage), y = `PriceDollar`, fill = factor(Storage))) +
+  geom_boxplot() +
+  labs(title = "Final Price Distribution by Storage Capacity", x = "Storage (GB)", y = "Final Price") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
+```{r}
+average_price_by_brand <- final_data %>%
+  group_by(Brand) %>%
+  summarize(Average_Price = mean(`PriceDollar`, na.rm = TRUE))
+ggplot(average_price_by_brand, aes(x = Brand, y = Average_Price, fill = Brand)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Average Final Price by Brand", x = "Brand", y = "Average Final Price") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(legend.position = "none")
+
+```
+
+```{r}
+# Install and load required packages
+#install.packages("shiny")
+#install.packages("shinydashboard")
+#install.packages("ggplot2")
+#install.packages("dplyr")
+
+library(shiny)
+library(ggplot2)
+library(dplyr)
+library(shinydashboard)
+
+# Set the working directory to the location of your file
+
+# Load the CSV file into a data frame
+#smartphones <- read.csv("smartphones.csv", header = TRUE, stringsAsFactors = FALSE)
+
+# UI definition
+ui <- dashboardPage(
+  dashboardHeader(title = "My dashboard"),
+  dashboardSidebar(
+     sidebarMenu(
+      menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
+      selectInput("brand", "Select a Brand:", choices = c("All", unique(final_data$Brand)), selected = "All"),
+      selectInput("ram", "Select RAM:", choices = c("All", unique(final_data$RAM)), selected = "All"),
+      selectInput("color", "Select Color:", choices = c("All",unique(final_data$Color)), selected = "All"),
+      selectInput("storage", "Select Storage:", choices = c("All", unique(final_data$Storage)), selected = "All"),
+      hr(),
+      checkboxInput("showTable", "Show Data Table", value = TRUE)
+    )
+  ),
+   dashboardBody(
+    fluidRow(
+      box(
+        title = "Smartphone Analysis Dashboard", status = "primary", solidHeader = TRUE, width = 12,
+        fluidRow(
+          column(6, box(title = "Market Share by Brand", status = "primary", solidHeader = TRUE, plotOutput("pieChart"), width = 12)),
+          column(6, box(title = "Average Final Price by Color", status = "primary", solidHeader = TRUE, plotOutput("barChartColor"), width = 12)),
+         
+          
+        ),
+          fluidRow(
+                 column(12, box(title = "Number of Smartphones per Brand", status = "primary", solidHeader = TRUE, plotOutput("barChartBrand"), width = 12)),
+          ),
+        fluidRow(
+          column(6, box(title = "Storage vs Final Price", status = "primary", solidHeader = TRUE, plotOutput("ScatterPlotStorage"), width = 12)),
+          column(6, box(title = "Final Price Distribution by RAM Size", status = "primary", solidHeader = TRUE, plotOutput("boxPlotRAM"), width = 12))
+        ),
+        fluidRow(
+          column(12, box(title = "Distribution of Final Prices", status = "primary", solidHeader = TRUE, plotOutput("histogram"), width = 12))
+        ),
+
+
+        conditionalPanel(
+          condition = "input.showTable == true",
+          tableOutput("dataTable")
+        )
+      )
+    )
+  )
+
+)
+
+# Server logic
+server <- function(input, output) {
+  filtered_data <- reactive({
+    data <- final_data
+    if (input$brand != "All") {
+      data <- data %>% filter(Brand == input$brand)
+    }
+    if (input$ram != "All") {
+      data <- data %>% filter(RAM == as.numeric(input$ram))
+    }
+    if (input$storage != "All") {
+      data <- data %>% filter(Storage == as.numeric(input$storage))
+    }
+    if (input$color != "All") {
+      data <- data %>% filter(Color == input$color)
+    }
+    data
+  })
+  
+  output$pieChart <- renderPlot({
+    brand_counts <- filtered_data() %>%
+      group_by(Brand) %>%
+      summarize(Count = n())
+    
+    ggplot(brand_counts, aes(x = "", y = Count, fill = Brand)) +
+      geom_bar(width = 1, stat = "identity") +
+      coord_polar("y", start = 0) +
+      theme_void() +
+      labs(title = "Market Share by Brand")
+    
+  
+  })
+   output$barChartBrand <- renderPlot({
+      ggplot(brand_counts, aes(x = Brand, y = Count, fill = Brand)) +
+      geom_bar(stat = "identity") +
+      labs(title = "Number of Smartphones per Brand", x = "Brand", y = "Count") +
+      theme_minimal()
+  })
+   output$barChartColor <- renderPlot({
+    color_price <- filtered_data() %>%
+      group_by(Color) %>%
+      summarize(Average_Price = mean(PriceDollar, na.rm = TRUE))
+    
+    ggplot(color_price, aes(x = Color, y = Average_Price, fill = Color)) +
+      geom_bar(stat = "identity") +
+      labs(title = "Average Final Price by Color", x = "Color", y = "Average Final Price") +
+      theme_minimal() +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  })
+ 
+
+output$ScatterPlotStorage <- renderPlot({
+    ggplot(filtered_data(), aes(x = Storage, y = PriceDollar, color = factor(Storage))) +
+  geom_point(alpha = 0.7) +  # Add transparency to better visualize overlapping points
+  labs(title = "Storage vs Final Price",
+       x = "Storage (GB)",
+       y = "Final Price") +
+ theme_minimal()
+  })
+  
+  output$boxPlotRAM <- renderPlot({
+    ggplot(filtered_data(), aes(x = factor(RAM), y = PriceDollar, fill = factor(RAM))) +
+      geom_boxplot() +
+      labs(title = "Final Price Distribution by RAM Size", x = "RAM (GB)", y = "Final Price") +
+      theme_minimal() +
+      theme(legend.position = "none")
+  })
+  
+ output$histogram <- renderPlot({
+    ggplot(filtered_data(), aes(x = PriceDollar)) +
+      geom_histogram(binwidth = 50, fill = "blue", color = "black") +
+      labs(title = "Distribution of Final Prices", x = "Final Price", y = "Count") +
+      theme_minimal()
+  })
+  
+  
+  output$dataTable <- renderTable({
+    filtered_data()
+  })
+}
+
+# Run the Shiny app
+shinyApp(ui = ui, server = server)
+
+```
+
+```{r}
+
