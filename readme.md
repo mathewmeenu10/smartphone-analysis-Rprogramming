@@ -40,7 +40,7 @@ Project Structure
 ```R
 data <- read.csv("smartphones.csv", header = TRUE)
 head(data)
-\```
+```
 
 
 ## Data Manipulation using dplyr:
@@ -54,16 +54,16 @@ tail(arranged_data)
 filtered_data <- smartphones %>% filter(RAM > 4)
 head(filtered_data)
 
-- Slice the first 5 rows:
+#Slice the first 5 rows:
 
 sliced_data <- smartphones %>% slice(1:5)
 print(sliced_data)
 
-- Add a new column for price in dollars and arrange by final price:
+#Add a new column for price in dollars and arrange by final price:
 
 mutated_data <- smartphones %>% mutate(PriceDollar = Final.Price * 1.1) %>% arrange(Final.Price)
 tail(mutated_data)
-\```
+```
 
 ## Visualization using ggplot2:
 
@@ -75,7 +75,7 @@ ggplot(brand_counts, aes(x = "", y = Count, fill = Brand)) +
   coord_polar("y", start = 0) +
   theme_void() +
   labs(title = "Distribution of Smartphone Brands")
-\```
+```
 
 ## Shiny Dashboard
 An interactive Shiny dashboard is included to explore the smartphone data.
@@ -90,7 +90,7 @@ An interactive Shiny dashboard is included to explore the smartphone data.
 
 ```R
 shinyApp(ui = ui, server = server)
-\```
+```
 
 ## Dashboard Features
 
