@@ -37,7 +37,7 @@ Project Structure
 ## Data Analysis Steps
 - Loading and Inspecting Data:
 
-\```r
+```R
 data <- read.csv("smartphones.csv", header = TRUE)
 head(data)
 \```
@@ -46,7 +46,7 @@ head(data)
 ## Data Manipulation using dplyr:
 
 - Arrange data by final price:
-\```r
+```R
 arranged_data <- smartphones %>% arrange(Final.Price)
 tail(arranged_data)
 
@@ -69,7 +69,7 @@ tail(mutated_data)
 
 - Distribution of smartphone brands:
 
-\```r
+```R
 ggplot(brand_counts, aes(x = "", y = Count, fill = Brand)) +
   geom_bar(width = 1, stat = "identity") +
   coord_polar("y", start = 0) +
@@ -88,7 +88,7 @@ An interactive Shiny dashboard is included to explore the smartphone data.
 
 ![alt text](image1.png)
 
-\```r
+```R
 shinyApp(ui = ui, server = server)
 \```
 
