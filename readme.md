@@ -1,12 +1,13 @@
-##Smartphone Data Analysis using R
-Authors
-Meenu Mathew
-Akshay Ramachandran
+# Smartphone Data Analysis using R
 
-#Overview
+### Authors
+ - Meenu Mathew
+ - Akshay Ramachandran
+
+## Overview
 This project involves analyzing smartphone data using R and R Markdown. The analysis includes data manipulation, visualization, and the creation of an interactive Shiny dashboard to explore various aspects of the smartphone dataset.
 
-Prerequisites
+## Prerequisites
 Make sure you have the following R packages installed:
 
 dplyr
@@ -14,8 +15,8 @@ ggplot2
 shiny
 shinydashboard
 knitr
-You can install them using the following commands:
 
+You can install them using the following commands:
 
 install.packages("dplyr")
 install.packages("ggplot2")
@@ -24,14 +25,15 @@ install.packages("shinydashboard")
 install.packages("knitr")
 
 Project Structure
-smartphone_analysis.Rmd: The main R Markdown file containing the analysis and visualizations.
-smartphones.csv: The CSV file containing the smartphone dataset.
-README.md: This README file.
+- smartphone_analysis.Rmd: The main R Markdown file containing the analysis and visualizations.
+- smartphones.csv: The CSV file containing the smartphone dataset.
+- README.md: This README file.
 
-Running the Analysis
+## Running the Analysis
 Open smartphone_analysis.Rmd in RStudio.
-Execute the code chunks by clicking the Run button within each chunk or by placing your cursor inside the chunk and pressing Ctrl+Shift+Enter.
+Execute the code chunks by clicking the Run button within each chunk or by placing your cursor inside the chunk.
 To generate the PDF report, click the Knit button or press Ctrl+Shift+K.
+
 Data Analysis Steps
 Loading and Inspecting Data:
 
@@ -66,7 +68,7 @@ ggplot(brand_counts, aes(x = "", y = Count, fill = Brand)) +
   theme_void() +
   labs(title = "Distribution of Smartphone Brands")
 
-Shiny Dashboard
+## Shiny Dashboard
 An interactive Shiny dashboard is included to explore the smartphone data.
 
 ![alt text](dasboard.png)
@@ -78,7 +80,9 @@ Run the Shiny app using the following command in your R console:
 ![alt text](image1.png)
 
 shinyApp(ui = ui, server = server)
-Dashboard Features
+
+## Dashboard Features
+
 Market Share by Brand: Pie chart showing the market share of different smartphone brands.
 Average Final Price by Color: Bar chart showing the average final price of smartphones by color.
 Number of Smartphones per Brand: Bar chart showing the number of smartphones for each brand.
